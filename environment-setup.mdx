@@ -1,0 +1,131 @@
+---
+title: 'Environment Setup'
+description: 'Configure your development environment for ProStack'
+---
+
+This guide covers the configuration of your development environment to work effectively with ProStack.
+
+## Code Editor Setup
+
+We recommend using Visual Studio Code with the following extensions for the best development experience:
+
+- **ESLint**: JavaScript linting
+- **Prettier**: Code formatting
+- **Tailwind CSS IntelliSense**: Auto-completion for Tailwind CSS classes
+- **Prisma**: Syntax highlighting and formatting for Prisma schema
+
+## VS Code Configuration
+
+ProStack includes recommended VS Code settings to maintain consistency across your team. These settings are stored in `.vscode/settings.json`:
+
+```json
+{
+    "cSpell.words": [
+        "customsearch"
+    ]
+}
+```
+
+You can extend these settings based on your team's preferences.
+
+## Git Configuration
+
+ProStack includes a `.gitignore` file configured for Next.js projects:
+
+```plaintext
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/.idea/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+.env
+```
+
+## Code Formatting
+
+ProStack uses Prettier for code formatting. The configuration is defined in `.prettierrc`:
+
+```json
+{
+  "printWidth": 100,
+  "tabWidth": 4,
+  "trailingComma": "all",
+  "singleQuote": false,
+  "jsxBracketSameLine": false,
+  "bracketSpacing": true,
+  "useTabs": false,
+  "semi": true
+}
+```
+
+To format your code manually, you can run:
+
+```bash
+bun run format
+```
+
+## TypeScript Configuration
+
+ProStack is configured with TypeScript for type safety. The TypeScript configuration can be found in `tsconfig.json`.
+
+## Environment Variables
+
+ProStack uses environment variables for configuration. For a complete list of required and optional environment variables, see the [Environment Variables](/configuration/environment-variables) page.
+
+## Pre-commit Hooks
+
+ProStack can be configured with pre-commit hooks using Husky to ensure code quality before committing changes. This includes running linters, formatters, and tests.
+
+## Next Steps
+
+Now that you've set up your development environment, you're ready to start developing with ProStack:
+
+<CardGroup cols={2}>
+  <Card
+    title="Local Development"
+    icon="laptop-code"
+    href="/development/local-development"
+  >
+    Learn about the development workflow
+  </Card>
+  <Card
+    title="Database Management"
+    icon="database"
+    href="/development/database-management"
+  >
+    Working with Prisma and PostgreSQL
+  </Card>
+</CardGroup> 

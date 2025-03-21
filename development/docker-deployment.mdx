@@ -1,0 +1,164 @@
+---
+title: 'Docker Deployment'
+description: 'Deploy ProStack using Docker for consistent environments'
+---
+
+ProStack includes Docker support for containerized deployment, ensuring consistent environments across development and production.
+
+## Docker Setup
+
+ProStack comes with a pre-configured Dockerfile in the root directory:
+
+```dockerfile
+# ---- Building Stage ----
+FROM oven/bun:latest AS builder
+
+WORKDIR /app
+
+COPY bun.lockb package.json ./
+
+RUN bun install --frozen-lockfile
+
+COPY . .
+
+RUN bun run build
+
+# ---- Production Stage ----
+FROM oven/bun:latest AS runner
+
+WORKDIR /app
+
+COPY --from=builder /app/package.json /app/bun.lockb ./
+COPY --from=builder /app/.next .next
+COPY --from=builder /app/public public
+COPY --from=builder /app/node_modules node_modules
+
+EXPOSE 3000
+
+CMD ["bun", "run", "start"]
+```
+
+## Docker Environment Variables
+
+For Docker deployments, ProStack provides a separate environment file:
+
+1. Copy the Docker environment example file:
+
+```bash
+cp .env.docker.example .env.docker
+```
+
+2. Update the variables in `.env.docker`:
+
+```plaintext
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+DB_USER=<username>
+DB_PASSWORD=<password>
+DB_HOST=pghost    # Use 'pghost' instead of 'localhost' for Docker
+DB_PORT=5432
+DB_NAME=<mydb>
+
+DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+```
+
+## Building the Docker Image
+
+To build the Docker image:
+
+```bash
+docker build -t prostack .
+```
+
+## Running the Docker Container
+
+To run the application in a Docker container:
+
+```bash
+docker run -p 3000:3000 --env-file .env.docker prostack
+```
+
+## Docker Compose Setup
+
+For a more complete setup with a database, you can use Docker Compose:
+
+```yaml
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+
+  db:
+    image: postgres:
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+```
+
+Save this as `docker-compose.yml` in your project root, then run:
+
+```bash
+docker-compose up -d
+```
+
+## Production Deployment Considerations
+
+When deploying to production with Docker, consider the following:
+
+1. **Environment Variables**: Ensure all production environment variables are set securely
+2. **Database Migrations**: Run migrations before starting the application
+3. **Health Checks**: Add health check endpoints to monitor your application
+4. **Logging**: Configure proper logging for production
+
+## CI/CD Pipeline
+
+You can integrate Docker deployments into your CI/CD pipeline:
+
+1. Build and test the Docker image
+2. Push the image to a container registry
+3. Deploy the new image to your production environment
+
+## Scaling with Docker
+
+For scaling your application:
+
+1. **Horizontal Scaling**: Run multiple instances of your container
+2. **Load Balancing**: Use a load balancer to distribute traffic
+3. **Container Orchestration**: Consider using Kubernetes for larger deployments
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Environment Variables"
+    icon="gear"
+    href="/configuration/environment-variables"
+  >
+    Learn about all available configuration options
+  </Card>
+  <Card
+    title="Security"
+    icon="shield"
+    href="/configuration/security"
+  >
+    Security best practices for your deployment
+  </Card>
+</CardGroup> 

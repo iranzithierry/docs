@@ -1,0 +1,155 @@
+---
+title: 'AI Chat'
+description: 'AI-powered chat interface with tool integrations'
+---
+
+ProStack includes a powerful AI chat feature that allows users to interact with AI assistants and integrates with external tools.
+
+## Chat Features
+
+- **AI Conversations**: Engage in natural language conversations with AI models
+- **Tool Integrations**: Web search capabilities and other tools
+- **Feedback System**: Collect user feedback on AI responses
+- **Markdown Support**: Rich text formatting in responses
+
+## Chat Components
+
+The chat system consists of several key components:
+
+### Chat Interface
+
+The main chat interface includes:
+
+- Message input area
+- Chat history display
+- Tool integration panels
+
+### Chat Bubbles
+
+ProStack provides custom components for displaying user and assistant messages:
+
+```tsx
+import { UserBubble } from "@/app/(app)/chat/components/chat-bubbles/user";
+import { AssistantBubble } from "@/app/(app)/chat/components/chat-bubbles/assistant";
+
+// User message
+<UserBubble content="How can I deploy ProStack to production?" />
+
+// Assistant message
+<AssistantBubble 
+    chatId="msg-123" 
+    content="You can deploy ProStack using Docker or Vercel. Here's how..." 
+    currentFeedback="neutral" 
+/>
+```
+
+### Tool Invocations
+
+The chat system can invoke external tools like web search:
+
+```tsx
+import { ToolInvocationListView } from "@/app/(app)/chat/components/chat-bubbles/tool-invocation";
+
+<ToolInvocationListView
+    toolInvocation={{
+        toolName: "web_search",
+        toolCallId: "call-123",
+        args: { query: "ProStack deployment" },
+        state: "running"
+    }}
+/>
+```
+
+## Using the Chat API
+
+To integrate with the chat functionality in your code:
+
+```tsx
+// Client-side chat interaction
+import { createChat, sendMessage } from "@/app/actions/ai/actions";
+
+// Create a new chat conversation
+const newConversation = await createChat();
+
+// Send a message to the conversation
+const response = await sendMessage({
+    conversationId: newConversation.id,
+    message: "How can I deploy ProStack to production?"
+});
+```
+
+## OpenAI Integration
+
+The chat system integrates with OpenAI's API. Configuration is done through environment variables:
+
+```plaintext
+# OpenAI API Key
+OPENAI_API_KEY=sk-*******
+```
+
+## Web Search Tool
+
+ProStack includes a web search tool that allows the AI to search the internet for information:
+
+```plaintext
+# Google Search Engine API Keys
+GOOGLE_SE_API_KEY=your-google-search-api-key
+GOOGLE_CSE_ID=your-google-custom-search-engine-id
+```
+
+## Extending the Chat System
+
+You can extend the chat system with:
+
+1. **Custom Tools**: Add new tool integrations
+2. **AI Model Configuration**: Change parameters or switch AI models
+3. **Custom UI**: Modify the chat interface to match your branding
+
+### Adding a Custom Tool
+
+```tsx
+// Define a new tool in app/actions/ai/index.ts
+export const agentTools = {
+    // Existing tools...
+    weather: {
+        description: "Get current weather information",
+        parameters: {
+            type: "object",
+            properties: {
+                location: {
+                    type: "string",
+                    description: "The city and state, e.g. San Francisco, CA"
+                }
+            },
+            required: ["location"]
+        }
+    }
+};
+
+// Implement the tool handler
+// In app/actions/ai/tools/weather.ts
+export async function handleWeatherTool(args: { location: string }) {
+    // Fetch weather data from an API
+    const weatherData = await fetchWeatherData(args.location);
+    return weatherData;
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Waitlist Feature"
+    icon="list"
+    href="/features/waitlist"
+  >
+    Learn about the waitlist management system
+  </Card>
+  <Card
+    title="Environment Variables"
+    icon="gear"
+    href="/configuration/environment-variables"
+  >
+    Configure chat-related environment variables
+  </Card>
+</CardGroup> 

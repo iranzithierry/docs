@@ -1,0 +1,80 @@
+---
+title: 'Upload API'
+description: 'API endpoints for file uploads'
+---
+
+ProStack provides an API for file uploads, powered by Vercel Blob storage. This API allows you to upload files and receive URLs to access them.
+
+## File Upload Endpoints
+
+### Upload File
+
+<CodeGroup>
+```bash Request
+POST /api/upload
+Content-Type: multipart/form-data
+
+// Form data with 'file' field containing the file to upload
+```
+
+```json Response
+{
+  "name": "example.jpg",
+  "contentType": "image/jpeg",
+  "url": "https://example-blob-storage.vercel-storage.com/app/image-1626284400000.jpg",
+  "size": 153284
+}
+```
+</CodeGroup>
+
+This endpoint uploads a file to the Vercel Blob storage and returns metadata including the public URL to access the file.
+
+## Error Handling
+
+If an error occurs during the upload process, the API will return an error response:
+
+```json
+{
+  "error": "Failed to upload file"
+}
+```
+
+Common error scenarios:
+- No file provided in the request
+- Unsupported file type
+- File size exceeds limits
+- Storage service unavailable
+
+## Authentication Requirements
+
+The upload API may require authentication depending on your application's configuration. Make sure to include your authentication token if necessary:
+
+```bash
+Authorization: Bearer <your_token>
+```
+
+## Supported File Types
+
+ProStack supports the following file types for upload:
+- Images: jpg, jpeg, png, gif, webp
+- Documents: pdf, doc, docx, txt
+- Other media files as configured
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Team API"
+    icon="users"
+    href="/api-reference/team"
+  >
+    Learn about team invitation API endpoints
+  </Card>
+  <Card
+    title="Authentication API"
+    icon="lock"
+    href="/api-reference/authentication"
+  >
+    Learn about the authentication API
+  </Card>
+</CardGroup> 

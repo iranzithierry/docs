@@ -1,0 +1,198 @@
+---
+title: 'PM2 Deployment'
+description: 'Deploy and manage ProStack in production using PM2'
+---
+
+ProStack includes PM2 configuration for robust production deployment. PM2 is a daemon process manager that helps you manage and keep your application online 24/7.
+
+## What is PM2?
+
+PM2 is a production process manager for Node.js applications. It allows you to:
+
+- Keep applications alive forever
+- Reload applications with zero downtime
+- Facilitate common system admin tasks
+- Manage application logging, monitoring, and clustering
+
+## PM2 Configuration
+
+ProStack comes with a pre-configured `ecosystem.config.js` file in the root directory:
+
+```javascript
+/**
+ * This files is used in production when running the app in background with pm2
+ * @example
+ * ```bash
+ * pm2 start ecosystem.config.js
+ * ```
+ */
+export const apps = [
+    {
+        name: "app",
+        script: "npx",
+        args: "next start --port 3020",
+        env: {
+            PORT: 3020,
+            NODE_ENV: "production",
+        },
+        watch: false,
+        max_memory_restart: "1G",
+        autorestart: true,
+        restart_delay: 1000,
+        log_date_format: "YYYY-MM-DD HH:mm:ss Z",
+        error_file: "logs/error.log",
+        out_file: "logs/output.log",
+        merge_logs: true,
+        kill_timeout: 5000,
+        no_daemon: false,
+    },
+];
+```
+
+## Configuration Options Explained
+
+The ecosystem file configures the following options:
+
+| Option | Value | Description |
+|--------|-------|-------------|
+| `name` | "app" | Name of the application in PM2 |
+| `script` | "npx" | The command to run |
+| `args` | "next start --port 3020" | Arguments passed to the script |
+| `PORT` | 3020 | The port on which the application runs |
+| `NODE_ENV` | "production" | Environment setting |
+| `watch` | false | Disable file watching (more stable in production) |
+| `max_memory_restart` | "1G" | Restart if memory exceeds 1GB |
+| `autorestart` | true | Automatically restart if the app crashes |
+| `restart_delay` | 1000 | Wait 1 second before restarting |
+| `log_date_format` | "YYYY-MM-DD HH:mm:ss Z" | Format of log timestamps |
+| `error_file` | "logs/error.log" | Where error logs are stored |
+| `out_file` | "logs/output.log" | Where output logs are stored |
+| `merge_logs` | true | Merge logs from all instances |
+| `kill_timeout` | 5000 | Wait 5 seconds before force killing |
+| `no_daemon` | false | Run PM2 as a daemon |
+
+## Installing PM2
+
+Before using PM2, you need to install it globally on your server:
+
+```bash
+npm install -g pm2
+```
+
+## Deploying with PM2
+
+To deploy your application with PM2:
+
+1. Build your Next.js application:
+
+```bash
+bun run build
+```
+
+2. Start the application with PM2:
+
+```bash
+pm2 start ecosystem.config.js
+```
+
+## Managing Your Application
+
+### View Application Status
+
+```bash
+pm2 list
+```
+
+This shows all running applications, their status, resource usage, and uptime.
+
+### View Application Logs
+
+```bash
+pm2 logs app
+```
+
+To view just errors:
+
+```bash
+pm2 logs app --err
+```
+
+### Restart the Application
+
+```bash
+pm2 restart app
+```
+
+### Stop the Application
+
+```bash
+pm2 stop app
+```
+
+### Delete from PM2
+
+```bash
+pm2 delete app
+```
+
+## PM2 Monitoring
+
+PM2 provides a simple monitoring interface:
+
+```bash
+pm2 monit
+```
+
+This command opens a dashboard showing real-time metrics about your application.
+
+## Setting Up PM2 to Start on System Boot
+
+To ensure your application starts automatically when the server reboots:
+
+```bash
+pm2 startup
+```
+
+Follow the instructions provided by the command to set up the startup script.
+
+Then save your current PM2 configuration:
+
+```bash
+pm2 save
+```
+
+## PM2 Ecosystem File Extensions
+
+You can extend the ecosystem file to support multiple environments or applications:
+
+```javascript
+export const apps = [
+  {
+    name: "app-production",
+    // Production settings
+  },
+  {
+    name: "app-staging",
+    // Staging settings
+  }
+];
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Docker Deployment"
+    icon="docker"
+    href="/development/docker-deployment"
+  >
+    Alternative deployment option using Docker
+  </Card>
+  <Card
+    title="Environment Variables"
+    icon="gear"
+    href="/configuration/environment-variables"
+  >
+    Configure your application for production
+  </Card>
+</CardGroup> 

@@ -1,0 +1,152 @@
+---
+title: 'Local Development'
+description: 'Develop your application locally with ProStack'
+---
+
+This guide explains how to effectively develop your application using ProStack's development workflow.
+
+## Development Server
+
+Start the development server with:
+
+<CodeGroup>
+```bash Using Bun (Recommended)
+bun run dev
+```
+
+```bash Using npm
+npm run dev
+```
+</CodeGroup>
+
+The development server will be available at [http://localhost:3000](http://localhost:3000) with hot reloading enabled.
+
+## Project Structure
+
+ProStack follows a modular structure to keep your code organized:
+
+```
+
+app/                  # Next.js app directory
+├── (app)/            # Main application routes
+│   ├── (more)/       # Additional pages (terms, privacy, waitlist)
+│   ├── auth/         # Authentication pages
+│   ├── chat/         # Chat feature
+│   └── ...
+├── actions/          # Server actions
+├── api/              # API routes
+└── ...
+components/           # Shared UI components
+lib/                  # Utility functions and shared code
+resources/            # Static resources
+public/               # Public assets
+...
+```
+
+## Development Scripts
+
+ProStack includes several npm scripts to help with development:
+
+| Script | Description |
+|--------|-------------|
+| `bun run dev` | Start the development server |
+| `bun run build` | Build the application for production |
+| `bun run start` | Start the production server |
+| `bun run lint` | Run ESLint to check for code issues |
+| `bun run db:push` | Push schema changes to the database |
+| `bun run db:studio` | Open Prisma Studio to manage database |
+
+## Working with Components
+
+ProStack includes a set of reusable UI components in the `components/` directory. These components are built with accessibility and performance in mind.
+
+### Example: Using a Button Component
+
+```tsx
+import { Button } from "@/components/ui";
+
+export default function MyComponent() {
+    return (
+        <Button 
+            intent="primary" 
+            onPress={() => console.log("Button clicked")}
+        >
+            Click Me
+        </Button>
+    );
+}
+```
+
+## Working with Server Actions
+
+ProStack uses React Server Actions for server-side operations. Here's an example of a server action for joining a waitlist:
+
+```tsx
+"use server";
+
+import { db } from "@/lib/db";
+
+export async function joinWaitlist(formData: FormData) {
+    const email = formData.get("email") as string;
+    
+    if (!email) {
+        return { success: false, message: "Email is required" };
+    }
+    
+    try {
+        await db.waitlist.create({
+            data: { email }
+        });
+        
+        return { success: true, message: "You've been added to the waitlist!" };
+    } catch (error) {
+        return { success: false, message: "Failed to join waitlist" };
+    }
+}
+```
+
+## Error Handling
+
+ProStack includes a standardized approach to error handling:
+
+1. Use try/catch blocks for server-side operations
+2. Return structured error responses from server actions
+3. Use toast notifications (via Sonner) for user-friendly error messages
+
+## Debugging
+
+For debugging your Next.js application, you can:
+
+1. Use the built-in Chrome DevTools for client-side debugging
+2. Add console logs with `console.log()` for quick debugging
+3. Set the `NODE_OPTIONS='--inspect'` environment variable for server-side debugging
+
+```bash
+NODE_OPTIONS='--inspect' bun run dev
+```
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card
+    title="Database Management"
+    icon="database"
+    href="/development/database-management"
+  >
+    Learn how to work with the database using Prisma
+  </Card>
+  <Card
+    title="Docker Deployment"
+    icon="docker"
+    href="/development/docker-deployment"
+  >
+    Deploy your application with Docker
+  </Card>
+  <Card
+  title="PM2 Deployment"
+  icon="gear"
+  href="/development/pm2-deployment"
+  >
+    Deploy your application with PM2
+  </Card>
+</CardGroup> 

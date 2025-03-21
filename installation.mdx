@@ -1,0 +1,132 @@
+---
+title: 'Installation'
+description: 'Get started with ProStack in minutes'
+---
+
+This guide will walk you through the process of setting up ProStack on your local development environment.
+
+## Prerequisites
+
+Before you begin, make sure you have the following tools installed:
+
+- **Node.js** (version 18 or higher)
+- **Bun** (recommended for faster installation and development)
+- **PostgreSQL** (version 14 or higher)
+- **Git**
+
+## Clone the Repository
+
+Start by cloning the ProStack repository to your local machine or using it as a template for your new project.
+
+## Install Dependencies
+
+ProStack uses Bun for dependency management and as a JavaScript runtime. While npm is supported, we recommend using Bun for the best performance:
+
+<CodeGroup>
+```bash Using Bun (Recommended)
+# Install Bun if you don't have it
+curl -fsSL https://bun.sh/install | bash
+
+# Install dependencies
+bun install
+```
+
+```bash Using npm
+npm install
+```
+</CodeGroup>
+
+## Set Up Environment Variables
+
+ProStack requires several environment variables to function correctly. We provide example configuration files to help you get started:
+
+1. Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+2. Open the `.env` file in your code editor and update the values as needed:
+
+```plaintext
+# Basic configuration
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+DATABASE_URL="postgresql://postgres:password@localhost:5432/prostack"
+
+# Authentication secrets - generate with: openssl rand -hex 32
+BETTER_AUTH_SECRET="generated-secret-here"
+
+# API keys for external services
+RESEND_API_KEY="re_123456789" # Get from resend.com
+OPENAI_API_KEY="sk-123456789" # Get from platform.openai.com
+```
+
+Refer to the [Environment Variables](/configuration/environment-variables) section for detailed information about each variable.
+
+## Database Setup
+
+ProStack uses PostgreSQL as its database. Follow these steps to set up your database:
+
+1. Install PostgreSQL if you haven't already:
+   - **macOS**: `brew install postgresql@16 && brew services start postgresql@16`
+   - **Ubuntu**: `sudo apt install postgresql-16`
+   - **Windows**: Download installer from postgresql.org
+
+2. Create a PostgreSQL database:
+
+```sql
+CREATE DATABASE prostack;
+```
+
+3. Update the `DATABASE_URL` in your `.env` file with your PostgreSQL credentials.
+
+4. Run the database migrations to create the necessary tables:
+
+```bash
+bun run db:push
+```
+
+## Start the Development Server
+
+Once you've completed the setup, you can start the development server:
+
+```bash
+bun run dev
+```
+
+Your ProStack application should now be running at [http://localhost:3000](http://localhost:3000).
+
+## Next Steps
+
+Now that you have ProStack up and running, here are some next steps to consider:
+
+<CardGroup cols={2}>
+  <Card
+    title="Environment Setup"
+    icon="gear"
+    href="/environment-setup"
+  >
+    Learn about advanced configuration options
+  </Card>
+  <Card
+    title="Local Development"
+    icon="code"
+    href="/development/local-development"
+  >
+    Development workflow and best practices
+  </Card>
+  <Card
+    title="Authentication"
+    icon="lock"
+    href="/features/authentication"
+  >
+    Understand the authentication system
+  </Card>
+  <Card
+    title="Database Management"
+    icon="database"
+    href="/development/database-management"
+  >
+    Learn how to work with the database
+  </Card>
+</CardGroup> 

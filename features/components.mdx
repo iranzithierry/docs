@@ -1,0 +1,93 @@
+---
+title: 'Modern Component Library (JustD)'
+description: 'A modern alternative to shadcn/ui for building beautiful UIs'
+---
+
+ProStack uses [JustD](https://getjustd.com/) as its component library, providing a comprehensive set of customizable, accessible UI components built on modern web standards.
+
+## What is JustD?
+
+JustD is a modern component library similar to shadcn/ui but with additional features and optimizations. It offers:
+
+- **Customizable components**: Easily theme and adapt components to your brand
+- **Accessibility**: ARIA-compliant components for better user experience
+- **Modern styling**: Clean, minimal aesthetics that work well in professional applications
+- **Lightweight**: Optimized bundle size for better performance
+- **Composable**: Components designed to work seamlessly together
+
+## Using JustD Components
+
+ProStack comes with JustD pre-installed and configured. You can use the components directly in your pages and components:
+
+```tsx
+import { Button, Card, Input } from "@/components/ui";
+
+export default function MyPage() {
+  return (
+    <Card className="p-6 max-w-md mx-auto">
+      <Card.Header>
+        <Card.Title>Sign Up</Card.Title>
+        <Card.Description>Create an account to get started</Card.Description>
+      </Card.Header>
+      <Card.Content className="space-y-4">
+        <Input placeholder="Email" type="email" />
+        <Input placeholder="Password" type="password" />
+        <Button className="w-full">Create Account</Button>
+      </Card.Content>
+    </Card>
+  );
+}
+```
+
+## Available Components
+
+JustD includes a wide range of components for building interfaces. Here are some frequently used components in ProStack:
+
+### Core Components
+- **Button**: Used for primary actions throughout the application
+- **Card**: Container for content with consistent styling
+- **Input**: Text inputs with validation support
+- **Form**: Form components with validation
+
+### Navigation Components
+- **Tabs**: Used in settings and dashboard interfaces
+- **Dropdown**: Used for user menu and other contextual actions
+- **Breadcrumb**: For navigation hierarchy
+
+### Feedback Components
+- **Toast**: Used for notifications throughout the app
+- **Alert**: For important messages and warnings
+- **Dialog**: For confirmation dialogs and important actions
+
+For a complete list of components, visit the [JustD Components](https://getjustd.com/components) documentation.
+
+## JustD vs shadcn/ui
+
+While shadcn/ui is a popular component library, JustD offers several advantages:
+
+| Feature | JustD | shadcn/ui |
+|---------|-------|-----------|
+| Installation | Pre-configured in ProStack | Requires manual setup |
+| Component Library | Comprehensive set of components | Extensive but may require more customization |
+| Integration | Deeply integrated with ProStack | Requires additional configuration |
+| Updates | Managed through ProStack updates | Requires manual component updates |
+| Documentation | Integrated in ProStack docs | Separate documentation |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Authentication UI"
+    icon="lock"
+    href="/features/authentication"
+  >
+    See JustD components in action in the authentication system
+  </Card>
+  <Card
+    title="Chat Interface"
+    icon="message"
+    href="/features/chat"
+  >
+    Explore the chat interface built with JustD components
+  </Card>
+</CardGroup> 

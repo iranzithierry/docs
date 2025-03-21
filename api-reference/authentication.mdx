@@ -1,0 +1,67 @@
+---
+title: 'Authentication API'
+description: 'API endpoints for user authentication'
+---
+
+ProStack uses Better-Auth to provide a comprehensive authentication system. The authentication API handles user registration, login, session management, and integration with Polar for subscription management.
+
+## Authentication Flow
+
+All authentication endpoints are managed by Better-Auth and are available under the `/api/auth` path. The authentication system supports:
+
+- Email/password authentication
+- Social login (Google)
+- Password reset
+- Team/organization management
+- Subscription and billing integration with Polar
+
+## Polar Subscription Endpoints
+
+ProStack integrates with Polar for subscription and billing management. The following endpoints are available for authenticated users:
+
+### Checkout a Product/Plan
+
+<CodeGroup>
+```bash Request
+GET /api/auth/checkout/{product-slug}
+```
+
+```text Response
+// Redirects to Polar checkout page for the specified product
+```
+</CodeGroup>
+
+This endpoint initiates the checkout process for a subscription plan. The user must be authenticated, and the `{product-slug}` must match one of the available plan slugs configured in the application. After successful checkout, the user is redirected back to the application.
+
+### Access Customer Portal
+
+<CodeGroup>
+```bash Request
+GET /api/auth/portal
+```
+
+```text Response
+// Redirects to Polar customer portal
+```
+</CodeGroup>
+
+This endpoint redirects authenticated users to their Polar customer portal where they can manage their subscriptions, billing information, and payment methods.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Team API"
+    icon="users"
+    href="/api-reference/team"
+  >
+    Team invitation management
+  </Card>
+  <Card
+    title="Authentication Feature"
+    icon="lock"
+    href="/features/authentication"
+  >
+    View the authentication documentation
+  </Card>
+</CardGroup> 

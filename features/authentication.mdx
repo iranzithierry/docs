@@ -1,0 +1,126 @@
+---
+title: 'Authentication'
+description: 'Complete authentication system with email/password and OAuth'
+---
+
+ProStack includes a pre-built authentication system that supports both email/password authentication and social login options using BetterAuth.
+
+## What is BetterAuth?
+
+[BetterAuth](http://better-auth.com?ref=https://pro-stack.vercel.app) is a comprehensive authentication solution that provides secure, customizable authentication for modern web applications. It offers features like:
+
+- Email/password authentication
+- Social logins
+- Email verification
+- Password reset
+- Multi-factor authentication
+- Team/organization management
+- Role-based access control
+
+## Authentication Components
+
+ProStack provides ready-to-use authentication components:
+
+### Sign In Form
+
+```tsx
+import SignInForm from "@/app/(app)/auth/components/sign-in-form";
+
+export default function SignInPage() {
+    return (
+        <div>
+            <h1>Sign In</h1>
+            <SignInForm callbackURL="/dashboard" />
+        </div>
+    );
+}
+```
+
+### Sign Up Form
+
+```tsx
+import SignUpForm from "@/app/(app)/auth/components/sign-up-form";
+
+export default function SignUpPage() {
+    return (
+        <div>
+            <h1>Create an Account</h1>
+            <SignUpForm callbackURL="/dashboard" />
+        </div>
+    );
+}
+```
+
+### OAuth Buttons
+
+```tsx
+import OAuthButtons from "@/app/(app)/auth/components/oauth-buttons";
+
+export default function SocialLoginSection() {
+    return (
+        <div>
+            <OAuthButtons callbackURL="/dashboard" />
+        </div>
+    );
+}
+```
+
+## Authentication Flow
+
+1. **Sign Up**: User creates an account with email/password or social login
+2. **Email Verification**: If enabled, user verifies their email address
+3. **Sign In**: User signs in with credentials or social provider
+4. **Session Management**: User remains authenticated for the duration of their session
+5. **Sign Out**: User signs out, ending their session
+
+## Customizing Authentication
+
+You can customize the authentication system through configuration in `lib/auth/index.ts`:
+
+```typescript
+export const auth = betterAuth({
+  database: prismaAdapter(db, {
+    provider: "postgresql",
+  }),
+  emailAndPassword: {
+    enabled: true,
+    autoSignIn: true,
+    minPasswordLength: 6,
+    resetPasswordTokenExpiresIn: siteConfig.auth.resetPasswordTokenExpiresIn.ms,
+    sendResetPassword: async (props) => {
+      if (isProd) await sendResetPasswordEmail(props);
+      console.log("Sending reset password email", props);
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: siteConfig.auth.emailVerification.enabled,
+    autoSignInAfterVerification: true,
+    sendEmailVerification: async (props) => {
+      if (isProd) await sendVerificationEmail(props);
+      console.log("Sending verification email", props);
+    },
+  },
+  // Additional configuration options...
+});
+```
+
+You can extend the auth config or visit the [BetterAuth docs](https://www.better-auth.com/docs/authentication/email-password) for more information.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Chat Feature"
+    icon="message"
+    href="/features/chat"
+  >
+    Learn about the AI-powered chat system
+  </Card>
+  <Card
+    title="Environment Variables"
+    icon="gear"
+    href="/configuration/environment-variables"
+  >
+    Configure authentication environment variables
+  </Card>
+</CardGroup> 

@@ -1,0 +1,78 @@
+---
+title: 'Team API'
+description: 'API endpoints for team invitation management'
+---
+
+ProStack includes API endpoints for managing team invitations, allowing users to accept or reject invitations to join teams.
+
+## Team Invitation Endpoints
+
+### Accept Team Invitation
+
+<CodeGroup>
+```bash Request
+GET /api/team/accept-invitation?invitationId=inv_123456
+```
+
+```json Response
+// On success, redirects to dashboard with welcome message
+```
+</CodeGroup>
+
+This endpoint accepts a team invitation and adds the authenticated user to the team. If the user is not authenticated, they will be redirected to the sign-in page with a callback to the accept invitation URL.
+
+### Reject Team Invitation
+
+<CodeGroup>
+```bash Request
+GET /api/team/reject-invitation?invitationId=inv_123456
+```
+
+```json Response
+// On success, redirects to dashboard
+```
+</CodeGroup>
+
+This endpoint rejects a team invitation, removing it from the user's pending invitations.
+
+## Error Handling
+
+If an error occurs during the invitation process, the API will return an HTML response with an error message:
+
+```html
+<h3>Error message</h3>
+<p>Try again later or contact support.</p>
+```
+
+Common error scenarios:
+- Invalid invitation ID
+- Expired invitation
+- User already in team
+- Insufficient permissions
+
+## Authentication Required
+
+Both endpoints require authentication. If the user is not authenticated when accepting an invitation, they will be redirected to:
+
+```
+/auth/sign-in?callback=<encoded_accept_invitation_url>
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Authentication API"
+    icon="lock"
+    href="/api-reference/authentication"
+  >
+    Learn about the authentication API endpoints
+  </Card>
+  <Card
+    title="Upload API"
+    icon="upload"
+    href="/api-reference/upload"
+  >
+    Learn about the file upload API
+  </Card>
+</CardGroup> 

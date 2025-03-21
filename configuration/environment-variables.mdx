@@ -1,0 +1,121 @@
+---
+title: 'Environment Variables'
+description: 'Configure your ProStack application with environment variables'
+---
+
+ProStack uses environment variables for configuration. This guide explains all available variables and their purposes.
+
+## Environment Files
+
+ProStack supports multiple environment files:
+
+- `.env`: Main environment file for local development
+- `.env.docker`: Environment variables for Docker deployment
+- `.env.production`: Production-specific variables (used during build)
+
+## Required Environment Variables
+
+These variables are required for the application to function properly:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_BASE_URL` | Base URL of your application | `http://localhost:3000` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:password@localhost:5432/prostack` |
+| `BETTER_AUTH_SECRET` | Secret key for authentication | Generate with `openssl rand -hex 32` |
+
+## Authentication Variables
+
+Variables for configuring the authentication system:
+
+| Variable | Description | Required | Example |
+|----------|-------------|----------|---------|
+| `BETTER_AUTH_SECRET` | Authentication encryption key | Yes | `1234...` (32-byte hex) |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | For Google auth | `123456789-abcdefg.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | For Google auth | `GOCSPX-abcdefghijklmnop` |
+| `RESEND_API_KEY` | API key for Resend email service | For email functionality | `re_123456789` |
+| `RESEND_EMAILS_DOMAIN` | Domain for sending emails | For email functionality | `mail.yourdomain.com` |
+
+## AI Chat Variables
+
+Variables for configuring the AI chat feature:
+
+| Variable | Description | Required | Example |
+|----------|-------------|----------|---------|
+| `OPENAI_API_KEY` | OpenAI API key | For chat functionality | `sk-123456789` |
+| `GOOGLE_SE_API_KEY` | Google Search API key | For web search tool | `AIzaSyABC123` |
+| `GOOGLE_CSE_ID` | Google Custom Search Engine ID | For web search tool | `123456:abcdef` |
+
+## Storage Variables
+
+Variables for configuring file storage:
+
+| Variable | Description | Required | Example |
+|----------|-------------|----------|---------|
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob storage token | For file uploads | `vercel_blob_rw_123456789` |
+
+## Site Verification and Social Links
+
+Variables for site verification and social links:
+
+| Variable | Description | Required | Example |
+|----------|-------------|----------|---------|
+| `GOOGLE_SITE_VERIFICATION_ID` | Google Search Console verification | No | `google1234567890` |
+| `DISCORD_SITE_INVITATION_LINK` | Discord community invitation link | No | `https://discord.gg/8yPw7vHj9E` |
+
+## Setting Environment Variables
+
+### Local Development
+
+For local development, copy the `.env.example` file and update the values:
+
+```bash
+cp .env.example .env
+```
+
+Then update the variables in the `.env` file with your values.
+
+### Docker Deployment
+
+For Docker deployment, use the `.env.docker` file:
+
+```bash
+cp .env.docker.example .env.docker
+```
+
+Update the Docker-specific variables like database host.
+
+### Production Deployment
+
+For production environments, set environment variables according to your hosting platform:
+
+- **Vercel**: Set variables in the Vercel dashboard under "Project Settings > Environment Variables"
+- **AWS**: Use AWS Parameter Store or Secrets Manager
+- **Docker**: Use environment variables in your Docker Compose file or Kubernetes secrets
+
+## Securing Environment Variables
+
+Keep your environment variables secure:
+
+1. Never commit `.env` files to your repository
+2. Use different values for development and production
+3. Regularly rotate sensitive credentials like API keys
+4. Use secret management tools in production environments
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Security"
+    icon="shield"
+    href="/configuration/security"
+  >
+    Learn about security best practices
+  </Card>
+  <Card
+    title="Docker Deployment"
+    icon="docker"
+    href="/development/docker-deployment"
+  >
+    Deploy your application with Docker
+  </Card>
+</CardGroup> 

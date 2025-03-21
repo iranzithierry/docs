@@ -1,0 +1,212 @@
+---
+title: 'Email System'
+description: 'Customizable transactional emails with React Email templates'
+---
+
+ProStack includes a complete email system for sending transactional emails using React Email templates and Resend as the delivery provider.
+
+## Email Features
+
+- **Customizable Templates**: All emails are built with React components
+- **Responsive Design**: Emails look great on all devices
+- **Branding Control**: Easy customization of colors, logos, and content
+- **Internationalization**: Support for multiple languages
+- **Delivery Tracking**: Email delivery and open rates (via Resend)
+
+## Email Types
+
+ProStack includes several pre-built email templates for common use cases:
+
+### Authentication Emails
+
+- **Email Verification**: Sent when a new user signs up (if enabled)
+- **Password Reset**: Sent when a user requests a password reset
+
+### Organization Emails
+
+- **Team Invitation**: Sent when a user is invited to join an organization
+
+### Marketing Emails
+
+- **Waitlist Confirmation**: Sent when a user joins the waitlist
+
+## How Emails Work
+
+ProStack uses [React Email](https://react.email/) for building email templates and [Resend](https://resend.com) for delivery:
+
+```tsx
+// Example of sending an email with ResendClient
+const mailObject = {
+    to: user.email,
+    react: EmailVerification({ user, url, token }),  // React component as email
+    subject: `${siteConfig.name} - Email verification`,
+    from: `${siteConfig.name} <${siteConfig.emails.from}>`,
+};
+resendClient.emails.send(mailObject);
+```
+
+## Email Components
+
+All email templates are built using reusable components found in `components/mails/mail-components.tsx`:
+
+| Component | Description |
+|-----------|-------------|
+| `MailContainer` | Container for the entire email |
+| `MailBody` | Email body with proper styling |
+| `MailTitle` | Title/heading for the email |
+| `MailText` | Paragraph text with proper styling |
+| `MailButton` | Call-to-action button |
+| `MailFooterText` | Footer text with smaller size |
+
+## Customizing Emails
+
+You can customize the email templates to match your brand:
+
+### 1. Update Email Templates
+
+Modify the React components in `components/mails/` to change the content and design:
+
+```tsx
+// Example: Customizing the email verification template
+export const EmailVerification = ({ user, url }: { user: User; url: string; token: string }) => (
+    <Html>
+        <Head />
+        <Preview>Verify Your Account</Preview> {/* Change the preview text */}
+        <Tailwind>
+            <MailBody>
+                <MailContainer>
+                    {/* Customize the title */}
+                    <MailTitle>Welcome, {user.name}! Please Verify Your Email</MailTitle>
+                    
+                    {/* Customize the content */}
+                    <MailText>
+                        Thanks for creating an account with {siteConfig.name}!
+                        Please verify your email address to get started.
+                    </MailText>
+                    
+                    {/* Customize the button */}
+                    <MailButton href={url}>Activate My Account</MailButton>
+                    
+                    <MailFooterText>
+                        If you didn't create this account, no action is needed.
+                    </MailFooterText>
+                </MailContainer>
+            </MailBody>
+        </Tailwind>
+    </Html>
+);
+```
+
+### 2. Update Site Configuration
+
+Update the email settings in `resources/site.ts`:
+
+```typescript
+export const siteConfig = {
+  // Other config...
+  emails: {
+    from: "noreply@yourdomain.com",
+    contact: "support@yourdomain.com",
+  },
+  // Other config...
+};
+```
+
+## Email Integration Points
+
+The email system is integrated with several features in ProStack:
+
+### Authentication Integration
+
+Emails are sent at key points in the authentication flow:
+
+```typescript
+// From lib/auth/index.ts
+emailAndPassword: {
+    // ...
+    sendResetPassword: async (props) => {
+        if (isProd) await sendResetPasswordEmail(props);
+        console.log("Sending reset password email", props);
+    },
+},
+emailVerification: {
+    sendOnSignUp: siteConfig.auth.emailVerification.enabled,
+    autoSignInAfterVerification: true,
+    sendEmailVerification: async (props) => {
+        if (isProd) await sendVerificationEmail(props);
+        console.log("Sending verification email", props);
+    },
+},
+```
+
+### Organization Integration
+
+Emails are sent when users are invited to organizations:
+
+```typescript
+// From lib/auth/index.ts
+organization: organization({
+    // ...
+    sendInvitation: async ({ email, organization, inviter, invitationUrl }) => {
+        if (isProd) {
+            await sendOrganizationInvitationEmail({
+                email,
+                inviterName: inviter.name || inviter.email,
+                inviterEmail: inviter.email,
+                organizationName: organization.name,
+                inviteLink: invitationUrl,
+            });
+        }
+        console.log("Sending organization invitation", { email, invitationUrl });
+    },
+}),
+```
+
+### Waitlist Integration
+
+Emails are sent when users join the waitlist:
+
+```typescript
+// Example from waitlist join form submission
+const result = await joinWaitlist(formData);
+if (result.success) {
+    await sendWaitlistEmail({ email });
+}
+```
+
+## Email Testing
+
+During development, email sending is logged to the console rather than actually sent (unless in production mode). This allows you to see the content of emails without sending real messages.
+
+To test emails in development:
+
+1. Check your console logs to see email content and recipients
+2. For testing real email delivery, use Resend's test mode or set up a development API key
+
+## Environment Variables
+
+Configure the email system with these environment variables:
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `RESEND_API_KEY` | Resend API key for sending emails | Yes |
+| `RESEND_EMAILS_DOMAIN` | Domain for sending emails with Resend | Recommended |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Authentication"
+    icon="lock"
+    href="/features/authentication"
+  >
+    Learn about the authentication system
+  </Card>
+  <Card
+    title="Environment Variables"
+    icon="gear"
+    href="/configuration/environment-variables"
+  >
+    Configure email-related environment variables
+  </Card>
+</CardGroup> 

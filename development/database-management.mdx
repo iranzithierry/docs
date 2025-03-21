@@ -1,0 +1,167 @@
+---
+title: 'Database Management'
+description: 'Working with PostgreSQL and Prisma in ProStack'
+---
+
+ProStack uses PostgreSQL as its database and Prisma as the ORM (Object-Relational Mapping) tool for database operations.
+
+## Database Setup
+
+Before you can use the database, make sure you have:
+
+1. Installed PostgreSQL on your system
+2. Created a database for your application
+3. Updated the `DATABASE_URL` in your `.env` file
+
+```plaintext
+DATABASE_URL="postgresql://<username>:<password>@localhost:5432/<mydb>"
+```
+
+## Prisma Schema
+
+The Prisma schema defines your database models and relationships. In ProStack, the schema is located in `prisma/schema.prisma`.
+
+<Note>
+  When you modify the schema, you need to synchronize these changes with your database.
+</Note>
+
+## Database Commands
+
+ProStack includes several commands to manage your database:
+
+<CodeGroup>
+```bash Push Schema Changes (Development)
+# Apply schema changes without migrations
+bun run db:push
+```
+
+```bash Use Migrations (Production)
+# Create a new migration
+bun run db:migrate:dev
+
+# Apply migrations in production
+bun run db:migrate:deploy
+```
+
+```bash Prisma Studio
+# Open Prisma Studio to view and edit data
+bun run db:studio
+```
+</CodeGroup>
+
+## Working with Prisma Client
+
+ProStack provides a configured Prisma client in `lib/db.ts` that you can import and use in your application:
+
+```tsx
+import { db } from "@/lib/db";
+
+// Example: Fetch all users
+async function getAllUsers() {
+  return await db.user.findMany();
+}
+
+// Example: Create a new post
+async function createPost(userId: string, title: string, content: string) {
+  return await db.post.create({
+    data: {
+      title,
+      content,
+      userId
+    }
+  });
+}
+```
+
+## Database Relationships
+
+Prisma makes it easy to work with relationships between tables. For example, to fetch a user with their posts:
+
+```tsx
+async function getUserWithPosts(userId: string) {
+  return await db.user.findUnique({
+    where: { id: userId },
+    include: { posts: true }
+  });
+}
+```
+
+## Using Transactions
+
+For operations that require multiple database changes, use transactions to ensure data consistency:
+
+```tsx
+async function transferPoints(fromUserId: string, toUserId: string, amount: number) {
+  return await db.$transaction(async (tx) => {
+    // Deduct points from sender
+    await tx.user.update({
+      where: { id: fromUserId },
+      data: { points: { decrement: amount } }
+    });
+    
+    // Add points to receiver
+    await tx.user.update({
+      where: { id: toUserId },
+      data: { points: { increment: amount } }
+    });
+    
+    // Create transaction record
+    await tx.pointTransaction.create({
+      data: {
+        amount,
+        fromUserId,
+        toUserId
+      }
+    });
+  });
+}
+```
+
+## Database Migrations
+
+In production environments, it's recommended to use migrations instead of `db push`:
+
+1. Create a migration:
+
+```bash
+bun run db:migrate:dev --name add_user_profile
+```
+
+2. Apply migrations in production:
+
+```bash
+bun run db:migrate:deploy
+```
+
+## Docker Database Setup
+
+If you're using Docker for development, update your `DATABASE_URL` in the `.env.docker` file:
+
+```plaintext
+DB_USER=<username>
+DB_PASSWORD=<password>
+DB_HOST=pghost    # Use 'pghost' instead of 'localhost' for Docker
+DB_PORT=5432
+DB_NAME=<mydb>
+
+DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Docker Deployment"
+    icon="docker"
+    href="/development/docker-deployment"
+  >
+    Deploy your application using Docker
+  </Card>
+  <Card
+    title="Authentication"
+    icon="lock"
+    href="/features/authentication"
+  >
+    Learn about the authentication system
+  </Card>
+</CardGroup> 

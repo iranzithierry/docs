@@ -1,0 +1,95 @@
+---
+title: 'Waitlist'
+description: 'Collect and manage user signups for early access'
+---
+
+ProStack includes a waitlist feature that allows you to collect email addresses from users interested in your product before it's fully launched.
+
+## Waitlist Features
+
+- **Email Collection**: Capture user emails in a database
+- **Feedback Display**: Show success/error messages to users
+- **Duplicate Prevention**: Prevent users from signing up multiple times
+- **Social Links**: Connect with users on social platforms
+
+## Waitlist Component
+
+The main waitlist component is simple to integrate into any page:
+
+```tsx
+import { WaitlistSignup } from "@/app/(app)/(more)/components/waitlist-signup";
+
+export default function WaitlistPage() {
+    return (
+        <main className="min-h-screen flex items-center justify-center">
+            <div className="relative z-[2] w-full">
+                <WaitlistSignup />
+            </div>
+        </main>
+    );
+}
+```
+
+## Server Action
+
+The waitlist feature uses a server action to handle form submissions it first checks if the email is already in the database and then adds it to the database and sends an email to the user.
+
+
+## Customizing the Waitlist Page
+
+You can customize the waitlist page by modifying the `app/(app)/(more)/components/waitlist-signup.tsx` component:
+
+1. Change the heading and description text
+2. Update the social media links
+3. Modify the form layout and styling
+4. Add additional fields (like name, company, etc.)
+
+## Accessing Waitlist Data
+
+To access and manage your waitlist data, you can use Prisma Studio:
+
+```bash
+bun run db:studio
+```
+
+Then navigate to the "Waitlist" table to view and manage your subscribers.
+
+## Using the Waitlist Data
+
+When you're ready to launch, you can export your waitlist data for use in email marketing tools:
+
+```tsx
+// Script to export waitlist to CSV
+import { db } from "@/lib/db";
+import * as fs from "fs";
+
+async function exportWaitlist() {
+    const waitlistEntries = await db.waitlist.findMany();
+    
+    const csv = waitlistEntries.map(entry => entry.email).join("\n");
+    fs.writeFileSync("waitlist.csv", csv);
+    
+    console.log(`Exported ${waitlistEntries.length} email addresses to waitlist.csv`);
+}
+
+exportWaitlist();
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Authentication"
+    icon="lock"
+    href="/features/authentication"
+  >
+    Learn about the authentication system
+  </Card>
+  <Card
+    title="Environment Variables"
+    icon="gear"
+    href="/configuration/environment-variables"
+  >
+    Configure email-related environment variables
+  </Card>
+</CardGroup> 

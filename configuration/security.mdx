@@ -1,0 +1,133 @@
+---
+title: 'Security'
+description: 'Security best practices for your ProStack application'
+---
+
+This guide covers important security considerations and best practices for your ProStack application.
+
+## Authentication Security
+
+ProStack includes a secure authentication system with several protective measures:
+
+### Password Security
+
+- Passwords are never stored in plain text
+- Password reset tokens are time-limited and single-use
+- Rate limiting is applied to login attempts
+
+### Session Management
+
+- Sessions are managed with secure HTTP-only cookies
+- CSRF protection is built into form submissions
+- Session timeout is configured for security
+
+## Environment Variables
+
+Protect your environment variables:
+
+- Never commit `.env` files to your repository
+- Use different environment variables for development and production
+- Rotate API keys and secrets regularly
+- Store production secrets in a secure vault service
+
+## API Security
+
+When building APIs with ProStack:
+
+- Use authentication for sensitive endpoints
+- Apply rate limiting to prevent abuse
+- Validate all user inputs
+- Use CORS to restrict API access to trusted domains
+
+## Database Security
+
+Protect your database:
+
+- Use strong, unique passwords for database access
+- Restrict database access to specific IP addresses
+- Encrypt sensitive data before storing it
+- Implement row-level security for multi-tenant applications
+
+## Frontend Security
+
+Client-side security considerations:
+
+- Use HTTPS for all communication
+- Implement Content Security Policy (CSP)
+- Sanitize user-generated content before displaying it
+- Apply proper input validation
+
+## Dependency Management
+
+Keep dependencies secure:
+
+- Regularly update dependencies with `bun update`
+- Run security audits with `bun audit`
+- Monitor for security advisories
+- Consider using dependabot for automated updates
+
+## Production Deployment
+
+For production deployments:
+
+1. **HTTPS**: Always use HTTPS with valid SSL certificates
+2. **Headers**: Configure security headers:
+   - X-Content-Type-Options
+   - X-Frame-Options
+   - X-XSS-Protection
+
+```typescript
+// Example Next.js middleware for security headers
+export function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+  
+  // Set security headers
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  return response;
+}
+```
+
+## Reporting Security Issues
+
+If you discover a security issue in ProStack:
+
+1. **Do not** disclose it publicly as an issue
+2. Send details to [hidden]@gmail.com
+3. Include steps to reproduce the vulnerability
+4. We'll acknowledge receipt and work on a fix
+
+## Security Checklist
+
+Before deploying to production, verify:
+
+- [x] All default passwords are changed
+- [x] Debug mode is disabled
+- [x] Error pages don't leak sensitive information
+- [x] Logging is configured appropriately
+- [x] Database backups are in place
+- [x] HTTPS is properly configured
+- [x] Authentication is working correctly
+- [x] Rate limiting is implemented
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Environment Variables"
+    icon="gear"
+    href="/configuration/environment-variables"
+  >
+    Learn how to properly configure environment variables
+  </Card>
+  <Card
+    title="Docker Deployment"
+    icon="docker"
+    href="/development/docker-deployment"
+  >
+    Secure deployment with Docker
+  </Card>
+</CardGroup> 
